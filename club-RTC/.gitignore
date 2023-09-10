@@ -1,0 +1,56 @@
+# Archivos de configuración locales y sensibles
+*.env
+*.pyc
+*.pyo
+__pycache__/
+*.egg-info/
+db.sqlite3
+*.sqlite3
+
+# Archivos generados por el IDE o editor de texto
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# Archivos de logs y caches
+log/
+logs/
+*.log
+__pycache__/
+cache/
+
+# Directorios de entorno virtual (si utilizas virtualenv)
+venv/
+env/
+ENV/
+
+# Otros archivos y directorios generados
+*.swp
+.DS_Store
+*.bak
+*.~
+__MACOSX/
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+*.egg-info/
+dist/
+build/
+*.mo
+*.pot
+
+# Si usas pipenv, añade también:
+Pipfile
+Pipfile.lock
+
+# Entorno de desarrollo (opcional, si usas herramientas como Docker)
+docker-compose.yml
+.dockerignore
+
+# Configuración de Heroku (si desplegarás en Heroku)
+*.heroku/
+
+# Configuración de IDE específica (por ejemplo, para PyCharm)
+.idea/
