@@ -37,6 +37,18 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'usuarios',
+    'bloc',
+    'enventos',
+    'social_django',
+     'social_core',
+     'django.contrib.sites',
+    # Add the following django-allauth apps
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
+     # for Google OAuth 2.0
 ]
 
 MIDDLEWARE = [
@@ -47,17 +59,20 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+      'allauth.account.middleware.AccountMiddleware',
 ]
 
 ROOT_URLCONF = 'club.urls'
-
+TEMPLATE_LOADERS = (
+    'social_django.templatetags.social_django',
+)
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
-            'context_processors': [
+           'context_processors': [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
@@ -67,6 +82,7 @@ TEMPLATES = [
     },
 ]
 
+
 WSGI_APPLICATION = 'club.wsgi.application'
 
 
@@ -75,11 +91,17 @@ WSGI_APPLICATION = 'club.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'club',
+        'USER': 'root',
+        'PASSWORD': '',
+        'HOST': 'localhost',  # Puedes cambiarlo si tu MySQL está en un host diferente
+        'PORT': '3306',       # Puede variar según tu configuración
     }
 }
 
+
+APPEND_SLASH = False
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -113,13 +135,43 @@ USE_L10N = True
 
 USE_TZ = True
 
+LOGIN_REDIRECT_URL = '/'
 
+# Additional configuration settings
+SOCIALACCOUNT_QUERY_EMAIL = True
+ACCOUNT_LOGOUT_ON_GET= True
+ACCOUNT_UNIQUE_EMAIL = True
+ACCOUNT_EMAIL_REQUIRED = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
-
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY="515179264545-ve9pa32g4np3oqme4f2u6b71tme790sf.apps.googleusercontent.com",
+SOCIAL_AUTH_GOOGLE_SECRET="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"
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
-
+SOCIALACCOUNT_QUERY_EMAIL = True
+ACCOUNT_LOGOUT_ON_GET= True
+ACCOUNT_UNIQUE_EMAIL = True
+ACCOUNT_EMAIL_REQUIRED = True
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+AUTHENTICATION_BACKENDS = [
+     'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend'
+]
+LOGIN_URL='login'
+LOGIN_REDIRECT_URL='home'
+LOGOUT_URL='logout'
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        }
+    }
+}
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY="515179264545-ve9pa32g4np3oqme4f2u6b71tme790sf.apps.googleusercontent.com"
+SOCIAL_AUTH_GOOGLE_SECRET="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"

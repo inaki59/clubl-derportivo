@@ -1,0 +1,58 @@
+{% load social_django %}
+
+<html lang="en">
+
+<head>
+    ...
+
+</head>
+
+<body>
+
+    <div
+        class="h-screen w-full flex max-w-md mx-auto overflow-hidden md:max-w-2xl flex-col justify-center items-center">
+        <div class="md:flex max-w-lg bg-white shadow-md rounded-lg">
+
+            <div class="p-8">
+
+                <div class="flex flex-col mb-8">
+                    ...
+                </div>
+
+                {% if user.is_authenticated %}
+                ...
+                {% else %}
+                <div class="bg-gray-100 rounded-lg">
+                    <div class="py-4 px-4">
+                        <div class="flex flex-col">
+                            ...
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+
+                <div class="flex justify-center py-4">
+
+                    {% if user.is_authenticated %}
+                    ...
+                    {% else %}
+                    {% comment %} <div class="google-btn">
+                        <a href="{% social_auth_url 'google' %}">
+                            ...
+                        </a>
+                    </div> {% endcomment %}
+                    {% endif %}
+                </div>
+
+                <div class="flex flex-col">
+                    ...
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</body>
+
+</html>
