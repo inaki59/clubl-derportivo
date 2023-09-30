@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'usuarios',
     'bloc',
     'enventos',
+     'reservas',
     'social_django',
      'social_core',
      'django.contrib.sites',

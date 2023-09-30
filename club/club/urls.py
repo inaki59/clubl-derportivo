@@ -22,4 +22,5 @@ urlpatterns = [
     path("account/",include("allauth.urls")),
     path("evento/",include("enventos.urls")),
     path("bloc/",include("bloc.urls")),
+    path("reservas/",include('reservas.urls'))
 ]
