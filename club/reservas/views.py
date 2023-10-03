@@ -6,10 +6,11 @@ from django.forms.models import model_to_dict
 from django.http import JsonResponse
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from .utils import generar_qr
 import json
 from django.core.paginator import Paginator
 from datetime import timedelta
-
+from django.forms.models import model_to_dict
 @api_view(['GET'])
 def reserva_list(request):
     page_number = request.GET.get('page')
@@ -51,11 +52,23 @@ def reserva_create(request):
                          seconds=int(duracion_str.split(':')[2]))
     
     reserva = Reserva(nombre=nombre, fecha=fecha, hora_inicio=hora_inicio, 
-                      duracion=duracion,pista=deporte, numero_pista=pista, )
+                      duracion=duracion, pista=deporte, numero_pista=pista)
     reserva.save()
+    
+    data_dict = {
+        'nombre': nombre,
+        'fecha': fecha,
+        'hora_inicio': hora_inicio,
+        'duracion': duracion_str,
+        'pista': pista,
+        'deporte': deporte
+    }
 
+    # Generar el QR con el diccionario convertido a JSON
+    generar_qr(data_dict)
     response_data = {'message': 'Reserva creada exitosamente'}
     return JsonResponse(response_data)
+
 
 @api_view(['PATCH', 'PUT'])
 def reserva_update(request, pk):
@@ -81,7 +94,7 @@ def reserva_update(request, pk):
     reserva.pista = deporte
     reserva.numero_pista = pista
     reserva.save()
-
+  
     data = {'message': 'Reserva actualizada exitosamente'}
     return JsonResponse(data)
 

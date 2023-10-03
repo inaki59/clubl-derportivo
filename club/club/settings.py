@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'bloc',
     'enventos',
      'reservas',
+      'django_cleanup',
     'social_django',
      'social_core',
      'django.contrib.sites',
@@ -51,6 +52,10 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google',
      # for Google OAuth 2.0
 ]
+
+CLEANUP_KEEP = True  # Esto es importante para mantener los archivos temporales hasta su próxima ejecución.
+CLEANUP_DAYS = 1  # El tiempo en días que los archivos se mantendrán en la carpeta temporal.
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
