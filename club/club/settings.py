@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/3.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -37,14 +37,15 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'usuarios',
     'bloc',
     'enventos',
-     'reservas',
-      'django_cleanup',
+    'reservas',
+    'django_cleanup',
     'social_django',
      'social_core',
      'django.contrib.sites',
+      'corsheaders',
+    'rest_framework',
     # Add the following django-allauth apps
     'allauth',
     'allauth.account',
@@ -55,7 +56,10 @@ INSTALLED_APPS = [
 
 CLEANUP_KEEP = True  # Esto es importante para mantener los archivos temporales hasta su próxima ejecución.
 CLEANUP_DAYS = 1  # El tiempo en días que los archivos se mantendrán en la carpeta temporal.
+SITE_ID = 2
 
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -66,8 +70,12 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
       'allauth.account.middleware.AccountMiddleware',
+       'corsheaders.middleware.CorsMiddleware',
 ]
 
+CORS_ORIGIN_WHITELIST = [
+     'http://localhost:3000'
+]
 ROOT_URLCONF = 'club.urls'
 TEMPLATE_LOADERS = (
     'social_django.templatetags.social_django',
@@ -75,7 +83,7 @@ TEMPLATE_LOADERS = (
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'client/build')],
         'APP_DIRS': True,
         'OPTIONS': {
            'context_processors': [
@@ -91,6 +99,17 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'club.wsgi.application'
 
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        }
+    }
+}
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
@@ -152,6 +171,7 @@ ACCOUNT_EMAIL_REQUIRED = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
+STATICFILES_DIRS=[os.path.join(BASE_DIR,'client/build/static')]
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY="515179264545-ve9pa32g4np3oqme4f2u6b71tme790sf.apps.googleusercontent.com",
 SOCIAL_AUTH_GOOGLE_SECRET="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"
 # Default primary key field type
@@ -179,5 +199,8 @@ SOCIALACCOUNT_PROVIDERS = {
         }
     }
 }
+STATIICFILES_DIRS=[
+    os.path.join(BASE_DIR, 'client/build/static')
+]
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY="515179264545-ve9pa32g4np3oqme4f2u6b71tme790sf.apps.googleusercontent.com"
 SOCIAL_AUTH_GOOGLE_SECRET="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"

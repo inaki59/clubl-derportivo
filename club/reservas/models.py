@@ -1,7 +1,10 @@
+# models.py
+
 from django.db import models
 
 class Reserva(models.Model):
     nombre = models.CharField(max_length=200)
+    correo = models.EmailField()  # Nuevo campo de correo electrónico
     fecha = models.DateField()
     hora_inicio = models.TimeField()
     duracion = models.DurationField()

@@ -8,6 +8,7 @@ from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.utils import ImageReader
 from reportlab.lib import utils
+from decouple import config
 import ssl
 import json
 import smtplib
@@ -46,12 +47,11 @@ def crear_pdf(data, qr_img):
 
     # Insertar texto
     c.setFont("Helvetica", 12)
-    c.drawString(100, 750, f'Nombre: {data["nombre"]}')
+    c.drawString(100, 750, f' reserva a nombre de  {data["nombre"]}')
     c.drawString(100, 730, f'Fecha: {data["fecha"]}')
     c.drawString(100, 710, f'Hora de inicio: {data["hora_inicio"]}')
     c.drawString(100, 690, f'Duración: {data["duracion"]}')
-    c.drawString(100, 670, f'Deporte: {data["deporte"]}')
-    c.drawString(100, 650, f'Pista: {data["pista"]}')
+
 
     # Insertar QR
     buffer_qr = BytesIO()
@@ -71,14 +71,15 @@ def crear_pdf(data, qr_img):
         f.write(buffer.getvalue())
     pdf = buffer.getvalue()
     buffer.close()
+    email=data["correo"]
     response.write(pdf)
-    sendEmail(pdf)
+    sendEmail(pdf,email)
 
 
-def sendEmail(pdf):
-    email_emisor='stadiumficticio@gmail.com'
-    email_password='qpizzyvdxkimihyy'
-    email_receptor='ifernandezbescos@gmail.com'
+def sendEmail(pdf,email):
+    email_emisor=config('EMAIL_EMISOR')
+    email_password=config('EMAIL_PASSWORD')
+    email_receptor=email
     asunto="reserva confirmada"
     cuerpo="su reserva se ha realizado exitosamente"
     em=EmailMessage()

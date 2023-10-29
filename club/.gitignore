@@ -40,7 +40,8 @@ dist/
 build/
 *.mo
 *.pot
-
+.env
+temp/*
 # Si usas pipenv, añade también:
 Pipfile
 Pipfile.lock
