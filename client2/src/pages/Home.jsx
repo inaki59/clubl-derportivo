@@ -8,12 +8,12 @@ export const Home = () => {
 
   return (
     <div className="centrado"> 
-       <div className="w-4/5 h-5/6 border border-gray-300 bg-white shadow-md rounded-md flex space-x-4 justify-center flex-col sm:flex-row items-center">
+       <div className="w-4/5 h-5/6 border border-gray-300  bg-white shadow-md rounded-md flex space-x-4 justify-center flex-col sm:flex-row items-center">
         <Link to="/reserva/tenis">
          <div>
         <svg 
           xmlns="http://www.w3.org/2000/svg" 
-          className={`w-20 h-20 p ${isHovered ? "hover:shadow-lg hover:shadow-green-300 transition-all transition-duration-300" : ""}`} 
+          className={`w-20 h-20 p ${isHovered ? "hover:shadow-lg hover:rounded-full hover:shadow-green-300 transition-all transition-duration-300" : ""}`} 
           width="4em" 
           height="4em" 
           viewBox="0 0 256 256"
@@ -29,7 +29,7 @@ export const Home = () => {
         <div>
         <svg 
           xmlns="http://www.w3.org/2000/svg" 
-          className={`w-20 h-20 ${isHovered ? "hover:shadow-lg hover:shadow-green-300 transition-all transition-duration-300" : ""}`} 
+          className={`w-20 h-20 ${isHovered ? "hover:shadow-lg hover:rounded-full hover:shadow-green-300 transition-all transition-duration-300" : ""}`} 
           width="4em" 
           height="4em" 
           viewBox="0 0 256 256"
@@ -45,7 +45,7 @@ export const Home = () => {
         <div>
         <svg 
           xmlns="http://www.w3.org/2000/svg" 
-          className={`w-20 h-20 ${isHovered ? "hover:shadow-lg hover:shadow-green-300 transition-all transition-duration-300" : ""}`} 
+          className={`w-20 h-20 ${isHovered ? "hover:shadow-lg hover:rounded-full hover:shadow-green-300 transition-all transition-duration-300" : ""}`} 
           width="4em" 
           height="4em" 
           viewBox="0 0 32 32"
@@ -61,7 +61,7 @@ export const Home = () => {
         <Link to="reserva/padel">
         <svg 
           xmlns="http://www.w3.org/2000/svg" 
-          className={`w-20 h-20 ${isHovered ? "hover:shadow-lg hover:shadow-green-300 transition-all transition-duration-300" : ""}`} 
+          className={`w-20 h-20 ${isHovered ? "hover:shadow-lg hover:rounded-full hover:shadow-green-300 transition-all transition-duration-300" : ""}`} 
           width="4em" 
           height="4em" 
           viewBox="0 0 24 24"

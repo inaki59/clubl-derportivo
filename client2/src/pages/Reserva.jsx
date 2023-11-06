@@ -20,6 +20,7 @@ export const Reserva = () => {
   const calendarRef = useRef(null); // Referencia al componente FullCalendar
   const [startDate, setStartDate] = useState(new Date());
   const [value, onChange] = useState('10:00');
+  const [eventosFiltered,setEventosFiltered]=useState([]);
   const [eventos,setEventos]=useState([]);
   const [pistaSeleccionada, setPistaSeleccionada] = useState('');
   const [fecha, setFecha] = useState(new Date());
@@ -48,36 +49,51 @@ export const Reserva = () => {
       duracion
     });
   };
-  
+  const getDataFilter=()=>{
+    const eventosFiltrados = eventos.filter(evento => evento.pista === pistaSeleccionada);
+    console.log("esto se debería mostrar",eventosFiltrados)
+    setEventosFiltered(eventosFiltrados);
+  }
   useEffect(()=>{
-    console.log("estoy en pista padre ",pistaSeleccionada)
+    getDataFilter();
+       // Filtrar eventos por pista seleccionada y guardar en eventosFiltered
+   
   },[pistaSeleccionada])
   useEffect(()=>{
     console.log("eventos ",eventos)
+    getDataFilter();
+    console.log("view",eventosFiltered)
   },[eventos])
     // Función que se ejecutará cuando se intente agregar un evento
     const handleAddEvent = (nuevoEvento) => {
-      // Validar si el evento colisiona con otros eventos
-      const eventosColisionados = calendarRef.current.getApi().getEvents().filter(evento => (
+      // Filtrar eventos por pista seleccionada
+      const eventosEnPistaSeleccionada = eventos.filter(evento => evento.pista === pistaSeleccionada);
+    
+      // Validar si el evento colisiona con otros eventos en la misma pista
+      const colisionPistaSeleccionada = eventosEnPistaSeleccionada.some(evento => (
         nuevoEvento.start < evento.end && nuevoEvento.end > evento.start
       ));
-  
-      if (eventosColisionados.length > 0) {
-        // Mostrar mensaje de error
+    
+      if (colisionPistaSeleccionada) {
         Swal.fire({
           title: "Error",
-          text: "La reserva colisiona con otros eventos.",
+          text: "La reserva colisiona con otros eventos en la misma pista.",
           icon: 'error'
         });
       } else {
         // Agregar el evento si no hay colisiones
-        calendarRef.current.getApi().addEvent(nuevoEvento);
+        setEventos([...eventos, nuevoEvento]);
+    
+     
+        
       }
     };
+    
+    
   const calendar = (
     <FullCalendar
-    ref={calendarRef} // Asignar la referencia al componente
       plugins={[dayGridPlugin, timeGridPlugin]}
+      events={eventosFiltered}
       locale={esLocale}
       initialView="timeGridWeek"
       headerToolbar={{
@@ -106,7 +122,7 @@ export const Reserva = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-  
+    if(pistaSeleccionada.length>0){
     const duracionEnMinutos = parseInt(formData.duracion);
     const endDate = new Date(startDate);
     endDate.setMinutes(startDate.getMinutes() + duracionEnMinutos);
@@ -149,6 +165,13 @@ export const Reserva = () => {
         hora: '',
         duracion: '',
         correo: '',
+      });
+    }
+    }else{
+      Swal.fire({
+        title: "Error",
+        text: "Escoge una pista a seleccionar",
+        icon: 'error'
       });
     }
   };
