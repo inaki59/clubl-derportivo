@@ -10,9 +10,11 @@ import "react-datepicker/dist/react-datepicker.css";
 import { registerLocale, setDefaultLocale } from  "react-datepicker";
 import Swal from 'sweetalert2'
 import es from 'date-fns/locale/es';
-
+import {getreservaByPista ,addReserva} from '../api/clientapi'
 import esLocale from '@fullcalendar/core/locales/es'; 
 import Autocomplete from '../form/Autocomplete';
+import moment from 'moment';
+import { formatDate } from '@fullcalendar/core';
 
 
 export const Reserva = () => {
@@ -49,14 +51,40 @@ export const Reserva = () => {
       duracion
     });
   };
-  const getDataFilter=()=>{
-    const eventosFiltrados = eventos.filter(evento => evento.pista === pistaSeleccionada);
-    console.log("esto se debería mostrar",eventosFiltrados)
+  const getDataFilter = async () => {
+    let eventosFiltrados = [];
+  
+    if (pistaSeleccionada !== '') {
+      const reservasData = await getreservaByPista(deporte, pistaSeleccionada);
+      console.log("hola", reservasData);
+  
+      // Assuming each reserva in reservasData is an object with a duration property
+      eventosFiltrados = reservasData?.map(reserva => {
+        const { fecha, hora_inicio, duracion, nombre, pista } = reserva;
+      
+        // Parse duration and add it to the start time
+        const startTime = new Date(`${fecha}T${hora_inicio}`);
+        const durationInSeconds = moment.duration(duracion).asSeconds();
+        const endTime = new Date(startTime.getTime() + durationInSeconds * 1000);
+      
+        // Format the data for FullCalendar
+        return {
+          title: nombre,
+          start: startTime,
+          end: endTime,
+          pista: pista,
+        };
+      });
+      
+    }
+  
+    console.log("esto se debería mostrar", eventosFiltrados);
     setEventosFiltered(eventosFiltrados);
-  }
+  };
+  
   useEffect(()=>{
     getDataFilter();
-       // Filtrar eventos por pista seleccionada y guardar en eventosFiltered
+       
    
   },[pistaSeleccionada])
   useEffect(()=>{
@@ -65,14 +93,28 @@ export const Reserva = () => {
     console.log("view",eventosFiltered)
   },[eventos])
     // Función que se ejecutará cuando se intente agregar un evento
-    const handleAddEvent = (nuevoEvento) => {
-      // Filtrar eventos por pista seleccionada
-      const eventosEnPistaSeleccionada = eventos.filter(evento => evento.pista === pistaSeleccionada);
+    const handleAddEvent = async (nuevoEvento) => {
+      console.log("add ", nuevoEvento);
     
-      // Validar si el evento colisiona con otros eventos en la misma pista
-      const colisionPistaSeleccionada = eventosEnPistaSeleccionada.some(evento => (
+      // Calculate duration in minutes
+      const durationInMinutes = Math.floor((nuevoEvento.end - nuevoEvento.start) / (1000 * 60));
+    
+      const formattedReservationData = {
+        nombre: nuevoEvento.title,
+        correo: "ifernadezbescos@gmail.com", // Assuming this value is constant for now
+        fecha: nuevoEvento.start.toISOString().split('T')[0], // Extracting the date part
+        hora_inicio: nuevoEvento.start.toISOString().split('T')[1].slice(0, 8), // Extracting the time part
+        duracion: `${Math.floor(durationInMinutes / 60)}:${durationInMinutes % 60}:00`,
+        pista: nuevoEvento.pista,
+        deporte: "tenis", // Assuming this value is constant for now
+      };
+    
+      // Check for collisions with existing events
+      const colisionPistaSeleccionada = eventos.some(evento => (
         nuevoEvento.start < evento.end && nuevoEvento.end > evento.start
       ));
+    
+      console.log("nuevo evento ", nuevoEvento);
     
       if (colisionPistaSeleccionada) {
         Swal.fire({
@@ -81,13 +123,23 @@ export const Reserva = () => {
           icon: 'error'
         });
       } else {
-        // Agregar el evento si no hay colisiones
-        setEventos([...eventos, nuevoEvento]);
-    
-     
-        
+        try {
+          // Add the reservation
+          await addReserva(formattedReservationData);
+          // Refresh the calendar data
+          Swal.fire({
+            title: "enhorabuena",
+            text: "reserva realizada con exito",
+            icon: 'success'
+          });
+          getDataFilter();
+        } catch (error) {
+          console.error('Error adding reservation:', error);
+          // Handle the error, show a message, etc.
+        }
       }
     };
+    
     
     
   const calendar = (
@@ -139,8 +191,7 @@ export const Reserva = () => {
   
     const eventosEnMismaPista = eventos.filter(evento => (
       evento.pista === pistaSeleccionada &&
-      evento.end > startDate &&
-      evento.start < endDate
+      (evento.end > startDate || evento.start < endDate)
     ));
   
     if (eventosEnMismaPista.length > 0) {

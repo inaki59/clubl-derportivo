@@ -73,20 +73,92 @@ def crear_pdf(data, qr_img):
     buffer.close()
     email=data["correo"]
     response.write(pdf)
-    sendEmail(pdf,email)
+    sendEmail(pdf,data)
 
 
-def sendEmail(pdf,email):
+def sendEmail(pdf,data):
     email_emisor=config('EMAIL_EMISOR')
     email_password=config('EMAIL_PASSWORD')
-    email_receptor=email
+    email_receptor=data["correo"]
+    nombre=data["nombre"]
+    fecha=data["fecha"]
+    inicio=data["hora_inicio"]
+    fin=data["duracion"]
     asunto="reserva confirmada"
-    cuerpo="su reserva se ha realizado exitosamente"
+   
+    cuerpo = f"""
+    <html>
+        <head>
+            <style>
+                body {{
+                    font-family: 'Helvetica', sans-serif;
+                    margin: 0;
+                    padding: 0;
+                    background-color: #f2f2f2;
+                }}
+
+                .container {{
+                    width: 80%;
+                    margin: 0 auto;
+                    background-color: #ffffff;
+                    padding: 20px;
+                    border-radius: 10px;
+                    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                    margin-top: 20px;
+                }}
+
+                .header {{
+                    background-color: #28a745;
+                    color: #ffffff;
+                    padding: 10px;
+                    text-align: center;
+                    border-top-left-radius: 10px;
+                    border-top-right-radius: 10px;
+                }}
+
+                .content {{
+                    padding: 20px;
+                }}
+
+                .footer {{
+                    text-align: center;
+                    padding: 10px;
+                    background-color: #28a745;
+                    color: #ffffff;
+                    border-bottom-left-radius: 10px;
+                    border-bottom-right-radius: 10px;
+                }}
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="header">
+                    <h1>Confirmación de Reserva</h1>
+                </div>
+                <div class="content">
+                    <p>Su reserva a nombre de {nombre} se ha realizado con éxito. A continuación, se detallan los datos de la reserva:</p>
+                    <ul>
+                        <li><strong>Fecha:</strong> {fecha}</li>
+                        <li><strong>Hora de inicio:</strong> {inicio}</li>
+                        <li><strong>Duración:</strong> {fin}</li>
+                    </ul>
+                    <p>Adjunto a este correo, encontrará el código QR correspondiente a su reserva.</p>
+                </div>
+                <div class="footer">
+                    <p>Gracias por elegir nuestro servicio. ¡Esperamos verlo/a pronto!</p>
+                </div>
+            </div>
+        </body>
+    </html>
+    """
+
+
+   
     em=EmailMessage()
     em['From']=email_emisor
     em['To']=email_receptor
     em['subject']=asunto
-    em.set_content(cuerpo)
+    em.add_alternative(cuerpo, 'html')
     contexto=ssl.create_default_context()
     em.add_attachment(pdf, maintype='application', subtype='pdf', filename='reserva.pdf')
     with smtplib.SMTP_SSL('smtp.gmail.com',465,context=contexto) as smtp:

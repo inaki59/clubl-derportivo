@@ -14,6 +14,28 @@ from django.forms.models import model_to_dict
 from decouple import config
 
 @api_view(['GET'])
+def reserva_list2(request):
+    reservas = Reserva.objects.all()
+
+    data = {
+        'reservas': list(reservas.values()),
+        'total_reservas': reservas.count()
+    }
+
+    return JsonResponse(data, safe=False)
+@api_view(['GET'])
+def reserva_list_filter(request, pista='tenis', numero_pista=1):
+
+    reservas = Reserva.objects.filter(pista=pista, numero_pista=numero_pista).values()
+    data = {
+        'reservas': list(reservas),
+        'total_reservas': reservas.count()
+    }
+
+    return JsonResponse(data, safe=False)
+
+
+@api_view(['GET'])
 def reserva_list(request):
     page_number = request.GET.get('page')
     reservas = Reserva.objects.all()
