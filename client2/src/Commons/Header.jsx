@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 
  const Header = () => {
 const [isOpen, setIsOpen] = useState(false);
@@ -14,18 +15,13 @@ const [isOpen, setIsOpen] = useState(false);
               Logo
             </a>
             <div className="hidden md:block ml-6">
-              <a className="text-white hover:text-gray-300 px-3 py-2" href="#">
+              <Link to="/" className="text-white hover:text-gray-300 px-3 py-2" >
                 Inicio
-              </a>
-              <a className="text-white hover:text-gray-300 px-3 py-2" href="#">
-                Menú
-              </a>
-              <a className="text-white hover:text-gray-300 px-3 py-2" href="#">
+              </Link>
+              <Link className="text-white hover:text-gray-300 px-3 py-2" >
                 Nosotros
-              </a>
-              <a className="text-white hover:text-gray-300 px-3 py-2" href="#">
-                Contacto
-              </a>
+              </Link>
+
             </div>
           </div>
           <div className="md:hidden">

@@ -24,6 +24,7 @@ export const Reserva = () => {
   const [value, onChange] = useState('10:00');
   const [eventosFiltered,setEventosFiltered]=useState([]);
   const [eventos,setEventos]=useState([]);
+  const [emailError, setEmailError] = useState(false);
   const [pistaSeleccionada, setPistaSeleccionada] = useState('');
   const [fecha, setFecha] = useState(new Date());
   const [hora, setHora] = useState('08:00'); // Estado para almacenar la hora seleccionada
@@ -101,13 +102,14 @@ export const Reserva = () => {
     
       const formattedReservationData = {
         nombre: nuevoEvento.title,
-        correo: "ifernadezbescos@gmail.com", // Assuming this value is constant for now
+        correo: formData.correo, // Assuming this value is constant for now
         fecha: nuevoEvento.start.toISOString().split('T')[0], // Extracting the date part
         hora_inicio: nuevoEvento.start.toISOString().split('T')[1].slice(0, 8), // Extracting the time part
         duracion: `${Math.floor(durationInMinutes / 60)}:${durationInMinutes % 60}:00`,
-        pista: nuevoEvento.pista,
-        deporte: "tenis", // Assuming this value is constant for now
+        pista: pistaSeleccionada,
+        deporte: deporte, // Assuming this value is constant for now
       };
+      console.log(formData)
     
       // Check for collisions with existing events
       const colisionPistaSeleccionada = eventos.some(evento => (
@@ -166,6 +168,11 @@ export const Reserva = () => {
       ...formData,
       [name]: value
     });
+    // Validar formato del correo
+    if (name === 'correo') {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      setEmailError(!emailRegex.test(value));
+    }
   };
   
   const agregarEvento = (evento) => {
@@ -188,6 +195,18 @@ export const Reserva = () => {
       });
       return;
     }
+       // Validación de campos requeridos
+       const requiredFields = ['nombre', 'correo'];
+       const missingFields = requiredFields.filter(field => !formData[field]);
+   
+       if (missingFields.length > 0) {
+         Swal.fire({
+           title: "Error",
+           text: `Por favor, completa los campos: ${missingFields.join(', ')}.`,
+           icon: 'error'
+         });
+         return;
+       }
   
     const eventosEnMismaPista = eventos.filter(evento => (
       evento.pista === pistaSeleccionada &&
@@ -226,17 +245,6 @@ export const Reserva = () => {
       });
     }
   };
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
   return (
     <div className="container mx-auto p-4">
     <div className="flex flex-wrap -mx-4">
@@ -310,8 +318,11 @@ export const Reserva = () => {
             name="correo"
             value={formData.correo}
             onChange={handleChange}
-            className="border border-gray-300 p-2 w-full"
+            className={`border border-gray-300 p-2 w-full ${emailError ? 'border-red-500 text-red-500' : ''}`}
           />
+             {emailError && (
+                  <p className="text-red-500 text-sm mt-1">Ingresa un correo electrónico válido.</p>
+                )}
         </div>
         <div className="mb-4">
 

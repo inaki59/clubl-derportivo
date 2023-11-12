@@ -5,6 +5,8 @@ import { Footer } from '../Commons/Footer';
 import { Home } from '../pages/Home';
 import "../css/skeleton.css"
 import { Reserva } from '../pages/Reserva';
+import { NotFound } from '../Commons/NotFound';
+import { Nosotros } from '../Commons/Nosotros';
 const MyRouter = () => {
   const Layout = () => {
     return (
@@ -26,9 +28,8 @@ const MyRouter = () => {
         <Route path="/" element={<Layout />}>
           <Route path="/" element={<Home />} />
           <Route path="/reserva/:deporte" element={<Reserva/>} />
-          <Route path="/contacto" element={<h1 className="text-3xl font-bold underline">
-      Hello world!
-    </h1>} />
+          <Route path="/nosotros" element={<Nosotros/>} />
+          <Route path="*" element={<NotFound/>}/>
         </Route>
       </Routes>
     </BrowserRouter>
