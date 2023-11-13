@@ -12,7 +12,8 @@ from django.core.paginator import Paginator
 from datetime import timedelta
 from django.forms.models import model_to_dict
 from decouple import config
-
+import random
+import string
 @api_view(['GET'])
 def reserva_list2(request):
     reservas = Reserva.objects.all()
@@ -71,14 +72,15 @@ def reserva_create(request):
     duracion_str = data.get('duracion')
     pista = data.get('pista')
     deporte = data.get('deporte')
-    
+        # Generar el código aleatorio
+    codigo = ''.join(random.choice(string.digits + string.ascii_uppercase) for _ in range(5))
+    print(f"la duración es de {duracion_str}")
     # Convertir la duración a un timedelta
     duracion = timedelta(hours=int(duracion_str.split(':')[0]), 
                          minutes=int(duracion_str.split(':')[1]), 
                          seconds=int(duracion_str.split(':')[2]))
-    
     reserva = Reserva(nombre=nombre, correo=correo, fecha=fecha, hora_inicio=hora_inicio, 
-                      duracion=duracion, pista=deporte, numero_pista=pista)
+                      duracion=duracion, pista=deporte, numero_pista=pista,codigo=codigo)
     reserva.save()
     
     data_dict = {
@@ -88,7 +90,8 @@ def reserva_create(request):
         'hora_inicio': hora_inicio,
         'duracion': duracion_str,
         'pista': pista,
-        'deporte': deporte
+        'deporte': deporte,
+        'codigo': codigo
     }
 
     # Generar el QR con el diccionario convertido a JSON

@@ -1,5 +1,7 @@
 import qrcode
 import os
+import shutil
+from datetime import datetime 
 from PIL import Image
 from datetime import datetime
 from django.http import HttpResponse
@@ -13,6 +15,29 @@ import ssl
 import json
 import smtplib
 from email.message import EmailMessage
+def limpiar_archivos_antiguos():
+    # Ruta de la carpeta temp
+    temp_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'temp')
+
+    # Obtener la lista de archivos en la carpeta temp
+    archivos_temp = os.listdir(temp_path)
+
+    # Obtener la fecha actual
+    fecha_actual = datetime.now().date()
+
+    # Recorrer los archivos y eliminar los que sean anteriores al día actual
+    for archivo in archivos_temp:
+        ruta_archivo = os.path.join(temp_path, archivo)
+        fecha_creacion = datetime.fromtimestamp(os.path.getctime(ruta_archivo)).date()
+
+        # Verificar si el archivo es anterior al día actual
+        if fecha_creacion < fecha_actual:
+            try:
+                os.remove(ruta_archivo)
+                print(f"Archivo {archivo} eliminado por ser anterior al día actual.")
+            except Exception as e:
+                print(f"No se pudo eliminar el archivo {archivo}. Error: {str(e)}")
+
 
 def generar_qr(data):
      # Convertir el diccionario de datos en una cadena JSON
@@ -35,6 +60,7 @@ def generar_qr(data):
     qr_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'temp', nombre_archivo)
 
     #img.save(ruta_temporal)
+    limpiar_archivos_antiguos()
     crear_pdf(data,img)
 
 def crear_pdf(data, qr_img):
@@ -84,6 +110,7 @@ def sendEmail(pdf,data):
     fecha=data["fecha"]
     inicio=data["hora_inicio"]
     fin=data["duracion"]
+    cancelacion=data["codigo"]
     asunto="reserva confirmada"
    
     cuerpo = f"""
@@ -143,6 +170,7 @@ def sendEmail(pdf,data):
                         <li><strong>Duración:</strong> {fin}</li>
                     </ul>
                     <p>Adjunto a este correo, encontrará el código QR correspondiente a su reserva.</p>
+                     <p>Si quieres cancelar la reserva tendras que ingresar este codigo {cancelacion}</p>
                 </div>
                 <div class="footer">
                     <p>Gracias por elegir nuestro servicio. ¡Esperamos verlo/a pronto!</p>
