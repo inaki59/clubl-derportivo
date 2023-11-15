@@ -27,7 +27,7 @@ export const Reserva = () => {
   const [emailError, setEmailError] = useState(false);
   const [pistaSeleccionada, setPistaSeleccionada] = useState('');
   const [fecha, setFecha] = useState(new Date());
-  const [hora, setHora] = useState('08:00'); // Estado para almacenar la hora seleccionada
+  const [hora, setHora] = useState(null); // Estado para almacenar la hora seleccionada
   const handleHoraChange = (e) => {
   const selectedHour = e.target.value;
   setHora(selectedHour);
@@ -36,22 +36,31 @@ export const Reserva = () => {
       const [formData, setFormData] = useState({
     nombre: '',
     fecha: '',
-    hora: '',
-    duracion: '',
+    hora: '60',
+    duracion: '',  // Valor por defecto de duración en minutos
     correo: '',
   });
   const handleSeleccionPista = (pista) => {
     setPistaSeleccionada(pista);
   };
   const handleChangeDuracion = (e) => {
-    const selectedOption = e.target.options[e.target.selectedIndex];
-    const duracion = selectedOption.value;
+    // Obtener la duración en minutos desde el valor del select
+    const duracionEnMinutos = parseInt(e.target.value, 10);
   
+    // Calcular las horas y los minutos
+    const duracionHoras = Math.floor(duracionEnMinutos / 60);
+    const duracionMinutos = duracionEnMinutos % 60;
+  
+    // Formatear la duración
+    const duracionFormateada = `${String(duracionHoras).padStart(2, '0')}:${String(duracionMinutos).padStart(2, '0')}:00`;
+  
+    // Actualizar el estado con la duración formateada
     setFormData({
       ...formData,
-      duracion
+      duracion: duracionFormateada
     });
   };
+  
   const getDataFilter = async () => {
     let eventosFiltrados = [];
   
@@ -82,6 +91,24 @@ export const Reserva = () => {
     console.log("esto se debería mostrar", eventosFiltrados);
     setEventosFiltered(eventosFiltrados);
   };
+  useEffect(() => {
+    console.log(formData.duracion);
+    const duracionEnMinutos = parseInt(formData.duracion);
+  
+    // Calcular las horas y los minutos
+    const duracionHoras = Math.floor(duracionEnMinutos / 60);
+    const duracionMinutos = duracionEnMinutos % 60;
+  
+    // Formatear la duración
+    const duracionFormateada = `${String(duracionHoras).padStart(2, '0')}:${String(duracionMinutos).padStart(2, '0')}:00`;
+  
+    // Asegurar que la duración siempre tenga el formato "HH:mm:ss"
+    const duracionFinal = `${String(duracionHoras).padStart(2, '0')}:${String(duracionMinutos).padStart(2, '0')}:00`;
+  
+    setHora(duracionFinal);
+    console.log(duracionFinal);
+  }, [formData.duracion]);
+  
   
   useEffect(()=>{
     getDataFilter();
@@ -99,13 +126,13 @@ export const Reserva = () => {
     
       // Calculate duration in minutes
       const durationInMinutes = Math.floor((nuevoEvento.end - nuevoEvento.start) / (1000 * 60));
-    
+    //aqui se mete la data
       const formattedReservationData = {
         nombre: nuevoEvento.title,
         correo: formData.correo, // Assuming this value is constant for now
         fecha: nuevoEvento.start.toISOString().split('T')[0], // Extracting the date part
         hora_inicio: nuevoEvento.start.toISOString().split('T')[1].slice(0, 8), // Extracting the time part
-        duracion: `${Math.floor(durationInMinutes / 60)}:${durationInMinutes % 60}:00`,
+        duracion: hora,
         pista: pistaSeleccionada,
         deporte: deporte, // Assuming this value is constant for now
       };
@@ -127,7 +154,9 @@ export const Reserva = () => {
       } else {
         try {
           // Add the reservation
+          console.log(hora)
           await addReserva(formattedReservationData);
+          setHora()
           // Refresh the calendar data
           Swal.fire({
             title: "enhorabuena",
@@ -181,11 +210,13 @@ export const Reserva = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if(pistaSeleccionada.length>0){
     const duracionEnMinutos = parseInt(formData.duracion);
     const endDate = new Date(startDate);
     endDate.setMinutes(startDate.getMinutes() + duracionEnMinutos);
   
+
+      
+    if(pistaSeleccionada.length>0){
     // Verificar que la hora final no supere las 22:00
     if (endDate.getHours() >= 22) {
       Swal.fire({
@@ -220,10 +251,11 @@ export const Reserva = () => {
         icon: 'error'
       });
     } else {
+      console.log()
       handleAddEvent({
         title: formData.nombre,
         start: startDate,
-        end: endDate,
+        end: hora,
         deporte: deporte,
         pista: pistaSeleccionada,
         correo: formData.correo
@@ -232,7 +264,7 @@ export const Reserva = () => {
       setFormData({
         nombre: '',
         fecha: '',
-        hora: '',
+        hora: '60',
         duracion: '',
         correo: '',
       });
@@ -300,7 +332,7 @@ export const Reserva = () => {
   id="duracion"
   name="duracion" // Asegúrate de que el name sea "duracion"
   value={formData.duracion}
-  onChange={handleChangeDuracion}
+  onChange={handleChange}
   className="border border-gray-300 p-2 w-full"
 >
   <option value="60" >60 minutos (1 hora)</option>

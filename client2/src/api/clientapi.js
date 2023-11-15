@@ -20,6 +20,7 @@ export const getreservaByPista = async (deporte, pista) => {
 
 
 export const addReserva = async (reservationData) => {
+  console.log("api ",reservationData)
   try {
     const response = await axios.post(`${api}/reservas/create/`, reservationData);
     return response.data; // Assuming the response contains the created reservation data
