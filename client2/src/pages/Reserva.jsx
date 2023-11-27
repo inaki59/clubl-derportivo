@@ -20,6 +20,7 @@ import { formatDate } from '@fullcalendar/core';
 export const Reserva = () => {
   registerLocale('es', es)
   const calendarRef = useRef(null); // Referencia al componente FullCalendar
+  const [isMoreHour,setisMoreHour]=useState(false)
   const [startDate, setStartDate] = useState(new Date());
   const [value, onChange] = useState('10:00');
   const [eventosFiltered,setEventosFiltered]=useState([]);
@@ -43,23 +44,23 @@ export const Reserva = () => {
   const handleSeleccionPista = (pista) => {
     setPistaSeleccionada(pista);
   };
-  const handleChangeDuracion = (e) => {
-    // Obtener la duración en minutos desde el valor del select
-    const duracionEnMinutos = parseInt(e.target.value, 10);
-  
-    // Calcular las horas y los minutos
-    const duracionHoras = Math.floor(duracionEnMinutos / 60);
-    const duracionMinutos = duracionEnMinutos % 60;
-  
-    // Formatear la duración
-    const duracionFormateada = `${String(duracionHoras).padStart(2, '0')}:${String(duracionMinutos).padStart(2, '0')}:00`;
-  
-    // Actualizar el estado con la duración formateada
-    setFormData({
-      ...formData,
-      duracion: duracionFormateada
-    });
+  const hourAntiUndefined = () => {
+    console.log("hora escogida", hora);
+    if (hora === "02:00:00" ) {
+      console.log("no haremos ningún cambio");
+      return hora;
+
+    }
+    else if(hora === "01:30:00"){
+      console.log("no haremos ningún cambio");
+      return hora
+    }
+    else {
+      console.log("Estableceremos como 01:00:00");
+      return "01:00:00";
+    }
   };
+  
   
   const getDataFilter = async () => {
     let eventosFiltrados = [];
@@ -109,11 +110,11 @@ export const Reserva = () => {
     console.log(duracionFinal);
   }, [formData.duracion]);
   
-  
+  useEffect(()=>{
+    console.log(hora)
+  },[hora])
   useEffect(()=>{
     getDataFilter();
-       
-   
   },[pistaSeleccionada])
   useEffect(()=>{
     console.log("eventos ",eventos)
@@ -132,7 +133,7 @@ export const Reserva = () => {
         correo: formData.correo, // Assuming this value is constant for now
         fecha: nuevoEvento.start.toISOString().split('T')[0], // Extracting the date part
         hora_inicio: nuevoEvento.start.toISOString().split('T')[1].slice(0, 8), // Extracting the time part
-        duracion: hora,
+        duracion: hourAntiUndefined(),
         pista: pistaSeleccionada,
         deporte: deporte, // Assuming this value is constant for now
       };
@@ -155,6 +156,7 @@ export const Reserva = () => {
         try {
           // Add the reservation
           console.log(hora)
+          console.log("add reserva definitiva",formattedReservationData)
           await addReserva(formattedReservationData);
           setHora()
           // Refresh the calendar data
@@ -204,9 +206,7 @@ export const Reserva = () => {
     }
   };
   
-  const agregarEvento = (evento) => {
-    setEventos([...eventos, evento]);
-  };
+
 
   const handleSubmit = (e) => {
     e.preventDefault();
