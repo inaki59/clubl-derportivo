@@ -60,7 +60,7 @@ export const Reserva = () => {
       return "01:00:00";
     }
   };
-  
+ 
   
   const getDataFilter = async () => {
     let eventosFiltrados = [];
@@ -137,27 +137,44 @@ export const Reserva = () => {
         pista: pistaSeleccionada,
         deporte: deporte, // Assuming this value is constant for now
       };
+      console.log(formattedReservationData)
       console.log(formData)
     
-      // Check for collisions with existing events
-      const colisionPistaSeleccionada = eventos.some(evento => (
-        nuevoEvento.start < evento.end && nuevoEvento.end > evento.start
-      ));
+      const hasConflicts = eventosFiltered.some(existingReservation => {
+        const existingStart = new Date(existingReservation.start);
+        const existingEnd = new Date(existingReservation.end);
     
-      console.log("nuevo evento ", nuevoEvento);
+        const newStart = new Date(`${formattedReservationData.fecha}T${formattedReservationData.hora_inicio}`);
+        const [duracionHoras, duracionMinutos, duracionSegundos] = formattedReservationData.duracion.split(':').map(Number);
+        const newEnd = new Date(newStart.getTime() + duracionHoras * 60 * 60 * 1000 + duracionMinutos * 60 * 1000 + duracionSegundos * 1000);
     
-      if (colisionPistaSeleccionada) {
-        Swal.fire({
-          title: "Error",
-          text: "La reserva colisiona con otros eventos en la misma pista.",
-          icon: 'error'
-        });
-      } else {
+        console.log("Nueva reserva:", newStart, "final", newEnd);
+        console.log("Reserva existente:", existingStart, "final", existingEnd);
+    
+        const isSameDay = existingStart.toDateString() === newStart.toDateString();
+        console.log(isSameDay)
+        console.log(isSameDay && newStart < existingEnd && newEnd > existingStart)
+        const isOverlap = isSameDay && newStart < existingEnd && newEnd > existingStart;
+    
+        return isOverlap;
+    });
+    
+    if (hasConflicts) {
+        console.log("¡Conflicto de reservas! No se puede realizar la reserva.");
+    } else {
+        console.log("Reserva exitosa. Día libre.");
+    }
+    
+    
+    
+    
+    
         try {
-          // Add the reservation
-          console.log(hora)
-          console.log("add reserva definitiva",formattedReservationData)
+
+          if (!hasConflicts) {
           await addReserva(formattedReservationData);
+          
+     
           setHora()
           // Refresh the calendar data
           Swal.fire({
@@ -166,11 +183,18 @@ export const Reserva = () => {
             icon: 'success'
           });
           getDataFilter();
+        }else{
+          Swal.fire({
+            title: "Advertencia",
+            text: "No puedes hacer la reserva porque ya hay una hecha a esa hora ",
+            icon: 'warning'
+          });
+        }
         } catch (error) {
           console.error('Error adding reservation:', error);
           // Handle the error, show a message, etc.
         }
-      }
+      
     };
     
     
