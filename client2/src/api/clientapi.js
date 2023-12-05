@@ -20,7 +20,6 @@ export const getreservaByPista = async (deporte, pista) => {
 
 
 export const addReserva = async (reservationData) => {
-  console.log("api ",reservationData)
   try {
     const response = await axios.post(`${api}/reservas/create/`, reservationData);
     return response.data; // Assuming the response contains the created reservation data
@@ -30,4 +29,13 @@ export const addReserva = async (reservationData) => {
     throw error; // Propagate the error
   }
 };
+export const deleteReserva =async(codigo)=>{
+  try{
+    const response=await axios.delete(`${api}/reservas/eliminar/${codigo}/`);
+    return response;
+  }catch(error){
+    console.log(error);
+    return error
+  }
+}
 

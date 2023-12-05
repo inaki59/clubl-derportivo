@@ -21,7 +21,9 @@ const [isOpen, setIsOpen] = useState(false);
               <Link className="text-white hover:text-gray-300 px-3 py-2" >
                 Nosotros
               </Link>
-
+              <Link to="eliminar-reserva" className="text-white hover:text-gray-300 px-3 py-2" >
+                eliminar reserva
+              </Link>
             </div>
           </div>
           <div className="md:hidden">

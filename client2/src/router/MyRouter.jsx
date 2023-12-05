@@ -7,6 +7,7 @@ import "../css/skeleton.css"
 import { Reserva } from '../pages/Reserva';
 import { NotFound } from '../Commons/NotFound';
 import { Nosotros } from '../Commons/Nosotros';
+import { DeleteReserva } from '../pages/DeleteReserva';
 const MyRouter = () => {
   const Layout = () => {
     return (
@@ -29,6 +30,7 @@ const MyRouter = () => {
           <Route path="/" element={<Home />} />
           <Route path="/reserva/:deporte" element={<Reserva/>} />
           <Route path="/nosotros" element={<Nosotros/>} />
+          <Route path='/eliminar-reserva' element={<DeleteReserva/>} />
           <Route path="*" element={<NotFound/>}/>
         </Route>
       </Routes>

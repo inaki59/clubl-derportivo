@@ -6,7 +6,7 @@ from django.forms.models import model_to_dict
 from django.http import JsonResponse
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .utils import generar_qr
+from .utils import generar_qr,send_cancelation_email
 import json
 from django.core.paginator import Paginator
 from datetime import timedelta
@@ -130,9 +130,12 @@ def reserva_update(request, pk):
     return JsonResponse(data)
 
 @api_view(['DELETE'])
-def reserva_delete(request, pk):
-    reserva = get_object_or_404(Reserva, pk=pk)
+def reserva_delete(request, code):
+    reserva = get_object_or_404(Reserva, codigo=code)
+    correo_reserva = reserva.correo 
     reserva.delete()
-
-    data = {'message': 'Reserva eliminada exitosamente'}
+    msg="su reserva ha sido ha cancelada"
+    asunto=f"reserva cancelada {code} "
+    send_cancelation_email(correo_reserva,msg,asunto)
+    data = {'message': 'Reserva eliminada exitosamente correo: ', 'correo':correo_reserva,}
     return JsonResponse(data)

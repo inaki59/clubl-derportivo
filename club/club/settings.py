@@ -38,7 +38,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'bloc',
-    'enventos',
     'reservas',
     'django_cleanup',
     'social_django',

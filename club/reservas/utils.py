@@ -195,6 +195,90 @@ def sendEmail(pdf,data):
 
 
 
+def send_cancelation_email(email_receptor, mensaje, asunto="Reserva Cancelada"):
+    email_emisor = config('EMAIL_EMISOR')
+    email_password = config('EMAIL_PASSWORD')
+
+    cuerpo = f"""
+    <html>
+        <head>
+            <style>
+                body {{
+                    font-family: 'Helvetica', sans-serif;
+                    margin: 0;
+                    padding: 0;
+                    background-color: #f2f2f2;
+                }}
+
+                .container {{
+                    width: 80%;
+                    margin: 0 auto;
+                    background-color: #ffffff;
+                    padding: 20px;
+                    border-radius: 10px;
+                    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                    margin-top: 20px;
+                }}
+
+                .header {{
+                    background-color: #dc3545;
+                    color: #ffffff;
+                    padding: 10px;
+                    text-align: center;
+                    border-top-left-radius: 10px;
+                    border-top-right-radius: 10px;
+                }}
+
+                .content {{
+                    padding: 20px;
+                }}
+
+                .footer {{
+                    text-align: center;
+                    padding: 10px;
+                    background-color: #dc3545;
+                    color: #ffffff;
+                    border-bottom-left-radius: 10px;
+                    border-bottom-right-radius: 10px;
+                }}
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="header">
+                    <h1>{asunto}</h1>
+                </div>
+                <div class="content">
+                    <p>{mensaje}</p>
+                </div>
+                <div class="footer">
+                    <p>Gracias por elegir nuestro servicio.</p>
+                </div>
+            </div>
+        </body>
+    </html>
+    """
+
+    em = EmailMessage()
+    em['From'] = email_emisor
+    em['To'] = email_receptor
+    em['subject'] = asunto
+    em.add_alternative(cuerpo, 'html')
+
+    contexto = ssl.create_default_context()
+
+    with smtplib.SMTP_SSL('smtp.gmail.com', 465, context=contexto) as smtp:
+        smtp.login(email_emisor, email_password)
+        smtp.sendmail(email_emisor, email_receptor, em.as_string())
+
+# Uso del método
+email_receptor = 'correo@dominio.com'
+mensaje_cancelacion = 'Su reserva ha sido cancelada. Lamentamos los inconvenientes.'
+send_cancelation_email(email_receptor, mensaje_cancelacion)
+
+
+
+
 
   
 

@@ -60,7 +60,11 @@ export const Reserva = () => {
       return "01:00:00";
     }
   };
- 
+  function getHourInFormat(millisecond) {
+    const time = new Date(millisecond);
+    return time.toLocaleTimeString();
+  }
+  
   
   const getDataFilter = async () => {
     let eventosFiltrados = [];
@@ -128,11 +132,12 @@ export const Reserva = () => {
       // Calculate duration in minutes
       const durationInMinutes = Math.floor((nuevoEvento.end - nuevoEvento.start) / (1000 * 60));
     //aqui se mete la data
+   
       const formattedReservationData = {
         nombre: nuevoEvento.title,
         correo: formData.correo, // Assuming this value is constant for now
         fecha: nuevoEvento.start.toISOString().split('T')[0], // Extracting the date part
-        hora_inicio: nuevoEvento.start.toISOString().split('T')[1].slice(0, 8), // Extracting the time part
+        hora_inicio: new Date(nuevoEvento.start.getTime() + 3600000).toISOString().split('T')[1].slice(0, 8),
         duracion: hourAntiUndefined(),
         pista: pistaSeleccionada,
         deporte: deporte, // Assuming this value is constant for now
@@ -172,6 +177,7 @@ export const Reserva = () => {
         try {
 
           if (!hasConflicts) {
+            console.log(formattedReservationData)
           await addReserva(formattedReservationData);
           
      

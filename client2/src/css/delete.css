@@ -1,0 +1,33 @@
+.delete{
+    display: flex;
+    justify-content:center;
+    align-items:center;
+    padding-top: 40px;
+    height: 80%;
+}
+.card{
+border: 1px solid black;
+box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+border-radius: 10px;
+height: 40%;
+width: 50%;
+}
+.card:hover{
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    transition:all 600ms;
+}
+
+button{
+    background-color:blue;
+}
+input[type="text"] {
+  border: 1px solid black;
+  padding: 8px;           
+  border-radius: 4px;     
+}
+
+input[type="text"]:focus {
+  outline: none;          
+  border-color: #007BFF;  
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
