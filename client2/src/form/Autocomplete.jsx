@@ -1,6 +1,6 @@
 import React, { useState ,useEffect} from 'react';
 
-const Autocomplete = ({onSeleccionPista,pista }) => {
+const Autocomplete = ({onSeleccionPista,pista ,deporte}) => {
   const handleChange = (e) => {
     const pistaSeleccionada = e.target.value;
     onSeleccionPista(pistaSeleccionada);
@@ -9,7 +9,7 @@ const Autocomplete = ({onSeleccionPista,pista }) => {
   return (
     <div className="max-w-xs mx-auto">
       <label htmlFor="autocomplete" className="block text-gray-700 font-bold mb-2">
-        Selecciona pista:
+        Selecciona pista de {deporte}:
       </label>
       <select
         id="autocomplete"

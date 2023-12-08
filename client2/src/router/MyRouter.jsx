@@ -6,13 +6,13 @@ import { Home } from '../pages/Home';
 import "../css/skeleton.css"
 import { Reserva } from '../pages/Reserva';
 import { NotFound } from '../Commons/NotFound';
-import { Nosotros } from '../Commons/Nosotros';
+import { Nosotros } from '../pages/Nosotros';
 import { DeleteReserva } from '../pages/DeleteReserva';
 const MyRouter = () => {
   const Layout = () => {
     return (
       <>
-      <div className="wrapper">
+      <div className="wrapper menu">
         <Header />
         <div className="content-main">
         <Outlet />

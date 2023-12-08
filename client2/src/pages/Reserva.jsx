@@ -29,10 +29,7 @@ export const Reserva = () => {
   const [pistaSeleccionada, setPistaSeleccionada] = useState('');
   const [fecha, setFecha] = useState(new Date());
   const [hora, setHora] = useState(null); // Estado para almacenar la hora seleccionada
-  const handleHoraChange = (e) => {
-  const selectedHour = e.target.value;
-  setHora(selectedHour);
-};
+
     const { deporte } = useParams();
       const [formData, setFormData] = useState({
     nombre: '',
@@ -308,10 +305,11 @@ export const Reserva = () => {
     }
   };
   return (
-    <div className="container mx-auto p-4">
-    <div className="flex flex-wrap -mx-4">
-      <div className="w-full sm:w-1/2 p-4">
+<div className="container mx-auto p-4">
+  <div className="flex flex-wrap -mx-4">
+    <div className="w-full sm:w-1/2 p-4">
       <div className="container mx-auto p-4">
+
       <form onSubmit={handleSubmit} className="max-w-md mx-auto bg-white p-8 rounded shadow-md">
         <div className="mb-4">
           <label htmlFor="nombre" className="block text-gray-700 font-bold mb-2">
@@ -399,7 +397,7 @@ export const Reserva = () => {
     </div>
       </div>
       <div className="w-full sm:w-1/2 p-4">
-        <Autocomplete onSeleccionPista={handleSeleccionPista} pista={pistaSeleccionada}/>
+        <Autocomplete onSeleccionPista={handleSeleccionPista} pista={pistaSeleccionada} deporte={deporte}/>
         {calendar}
       </div>
     </div>

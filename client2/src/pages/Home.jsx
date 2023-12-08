@@ -7,13 +7,16 @@ export const Home = () => {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
+    <>
+    <h2 className="pt-2 text-xl">pagina principal</h2>
+    Bienvenidos  a la pagina principal de mi web  haz click en algún balon para hacer una reserva
     <div className="centrado"> 
        <div className="w-4/5 h-5/6 border border-gray-300  bg-white shadow-md rounded-md flex space-x-4 justify-center flex-col sm:flex-row items-center">
         <Link to="/reserva/tenis">
          <div>
         <svg 
           xmlns="http://www.w3.org/2000/svg" 
-          className={`w-20 h-20 p ${isHovered ? "hover:shadow-lg hover:rounded-full hover:shadow-green-300 transition-all transition-duration-300" : ""}`} 
+          className={`w-20 h-20 pl-3 p ${isHovered ? "hover:shadow-lg hover:rounded-full hover:shadow-green-300 transition-all transition-duration-300" : ""}`} 
           width="4em" 
           height="4em" 
           viewBox="0 0 256 256"
@@ -78,5 +81,6 @@ export const Home = () => {
         </div>
       </div>
     </div>  
+    </>
   );
 };
