@@ -7,7 +7,7 @@ export const Nosotros = () => {
   return (
     <>
     <div className="centrado">
-    <div className="box">
+    <div className="box mt-2">
     Soy un desarrollador web que ha creado una web para hacer reservas de pistas de deportes.
      Nuestra misión es facilitar a las personas la reserva de pistas de deportes de forma rápida y sencilla.
         

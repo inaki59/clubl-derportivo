@@ -42,7 +42,6 @@ def limpiar_archivos_antiguos():
 def generar_qr(data):
      # Convertir el diccionario de datos en una cadena JSON
     data_json = json.dumps(data)
-
     qr = qrcode.QRCode(
         version=1,
         error_correction=qrcode.constants.ERROR_CORRECT_L,
@@ -71,12 +70,15 @@ def crear_pdf(data, qr_img):
 
     c = canvas.Canvas(buffer, pagesize=letter)
 
-    # Insertar texto
+ # Insertar texto
     c.setFont("Helvetica", 12)
     c.drawString(100, 750, f' reserva a nombre de  {data["nombre"]}')
     c.drawString(100, 730, f'Fecha: {data["fecha"]}')
     c.drawString(100, 710, f'Hora de inicio: {data["hora_inicio"]}')
     c.drawString(100, 690, f'Duración: {data["duracion"]}')
+    c.drawString(100, 670, f'Pista: {data["pista"]}')
+    c.drawString(100, 650, f'deporte: {data["deporte"]}')
+
 
 
     # Insertar QR
@@ -109,6 +111,8 @@ def sendEmail(pdf,data):
     nombre=data["nombre"]
     fecha=data["fecha"]
     inicio=data["hora_inicio"]
+    deporte=data["deporte"]
+    pista=data["pista"]
     fin=data["duracion"]
     cancelacion=data["codigo"]
     asunto="reserva confirmada"
@@ -168,6 +172,8 @@ def sendEmail(pdf,data):
                         <li><strong>Fecha:</strong> {fecha}</li>
                         <li><strong>Hora de inicio:</strong> {inicio}</li>
                         <li><strong>Duración:</strong> {fin}</li>
+                        <li><strong>deporte:</strong> {deporte}  </li>
+                        <li><strong>pista:</strong> {pista}  </li>
                     </ul>
                     <p>Adjunto a este correo, encontrará el código QR correspondiente a su reserva.</p>
                      <p>Si quieres cancelar la reserva tendras que ingresar este codigo {cancelacion}</p>
