@@ -20,4 +20,9 @@ Welcome to my web project made with react on the frontend and django on the back
  * python manage.py makemigrations
  * python manage.py migrate
  activate port mysql and apache from xammp
+
+## create env
+ * create env frontend  REACT_APP_API_URL=http://localhost:8000
+ * create env backend EMAIL_EMISOR=email, EMAIL_PASSWORD=password
+
     
